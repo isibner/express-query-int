@@ -24,13 +24,24 @@ var parser = require('../lib/parse');
 
 exports.parser = {
   setUp: function(done) {
+    var returnFalse = function () { return false };
+
     this.intOptions = {
-      parser: parseInt
+      parser: parseInt,
+      protect: returnFalse
     };
 
     this.floatOptions = {
-      parser: parseFloat
+      parser: parseFloat,
+      protect: returnFalse
     };
+
+    this.protectOptions = {
+      parser: parseInt,
+      protect: function (key) {
+        return key === 'id';
+      }
+    }
 
     done();
   },
@@ -104,6 +115,22 @@ exports.parser = {
         a: 'string'
       },
       'Should not convert regular string.'
+    );
+
+    test.done();
+  },
+
+  protect: function(test) {
+    test.deepEqual(
+      parser({
+        num: '12345',
+        id: '12345'
+      }, this.protectOptions),
+      {
+        num: 12345,
+        id: '12345'
+      },
+      'Should protect the given key.'
     );
 
     test.done();

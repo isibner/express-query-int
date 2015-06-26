@@ -48,6 +48,17 @@ app.use(queryParser({
 }));
 ```
 
+### Protected Keys
+By default the parser will transform any string that resembles a number. Sometimes, though, you'll have a query argument like `id` that you want to stay a string. For cases like this, just pass in a `protect` function - the parser won't be applied for keys where `protect(key)` is true.
+
+```js
+app.use(queryParser({
+  protect: function (key) {
+    return key === 'id';
+  }
+}));
+```
+
 ### Custom Parser
 Provide a function that takes two arguments:
 
